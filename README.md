@@ -28,3 +28,18 @@ http://localhost:XXXX/
 nvm use
 
 # To Access html file as deployed domain go to github pages under settings
+
+# Sources For Project
+
+https://code.visualstudio.com/docs/copilot/customization/mcp-servers
+https://www.mongodb.com/docs/mcp-server/configuration/methods/?client=claude-code&deployment-type=atlas
+https://expressjs.com/en/resources/middleware/cors/#installation
+https://nodejs.org/api/process.html#processenv
+https://code.visualstudio.com/docs/reference/variables-reference
+https://code.claude.com/docs/en/settings
+https://www.youtube.com/watch?v=Coot4TFTkN4&t=57s
+https://rapid-agent.devpost.com/details/mongodb-resources
+https://expressjs.com/en/guide/database-integration/
+https://expressjs.com/en/guide/using-template-engines/
+https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Express_Nodejs/skeleton_website
+https://googleapis.dev/nodejs/google-auth-library/5.6.1/
