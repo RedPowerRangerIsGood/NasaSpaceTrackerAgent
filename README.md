@@ -43,3 +43,6 @@ https://expressjs.com/en/guide/database-integration/
 https://expressjs.com/en/guide/using-template-engines/
 https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Express_Nodejs/skeleton_website
 https://googleapis.dev/nodejs/google-auth-library/5.6.1/
+https://github.com/r-spacex/SpaceX-API/blob/master/docs/clients.md
+https://publicapis.io/space-x-api
+https://auth0.com/blog/url-uri-urn-differences/#What-Is-a-URI-
