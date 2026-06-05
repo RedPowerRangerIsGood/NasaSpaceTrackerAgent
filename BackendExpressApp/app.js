@@ -3,29 +3,35 @@ require("dotenv").config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+const cors = require('cors');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const { env } = require('process');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 const mongoose = require("mongoose");
+const { MongoClient } = require("mongodb");
+const { GoogleGenAI } = require("@google/genai");
 
 var app = express();
+
+app.use(cors());
 
 console.log("Mongo URI exists:", !!process.env.MONGODB_URI);
 
 mongoose
   .connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 5000
+    serverSelectionTimeoutMS: 5000,
   })
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((error) => console.error("MongoDB connection error:", error.message));
 
-const { GoogleGenAI } = require('@google/genai');
+// const { GoogleGenAI } = require('@google/genai');
 
-const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+// const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
+// const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -56,21 +62,21 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-async function generateContent(projectId = GOOGLE_CLOUD_PROJECT, location = GOOGLE_CLOUD_LOCATION) {
-  const client = new GoogleGenAI({
-    vertexai: true,
-    project: projectId,
-    location: location,
-  });
+// async function generateContent(projectId = GOOGLE_CLOUD_PROJECT, location = GOOGLE_CLOUD_LOCATION) {
+//   const client = new GoogleGenAI({
+//     vertexai: true,
+//     project: projectId,
+//     location: location,
+//   });
 
-  const response = await client.models.generateContent({
-    model: 'gemini-3-flash-preview',
-    contents: 'How does AI work?',
-  });
+//   const response = await client.models.generateContent({
+//     model: 'gemini-3-flash-preview',
+//     contents: 'How does AI work?',
+//   });
 
-  console.log(response.text);
+//   console.log(response.text);
 
-  return response.text;
-}
+//   return response.text;
+// }
 
 module.exports = app;

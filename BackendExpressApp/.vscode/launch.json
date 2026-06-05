@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node-terminal",
+            "name": "Run Script: devstart",
+            "request": "launch",
+            "command": "npm run devstart",
+            "cwd": "${workspaceFolder}/BackendExpressApp",
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/gcp-key.json"
+            }
+        }
+    ]
+}
