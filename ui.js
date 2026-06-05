@@ -1,7 +1,7 @@
 // Set authorization token.
 const searchWidget = document.querySelector('gen-search-widget');
 const refreshToken = fetchToken();
-
+console.log("Fetched Refresh Token:", refreshToken);
 async function fetchToken() {
 
     const response = await fetch('http://localhost:3000/token');
