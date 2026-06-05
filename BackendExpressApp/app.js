@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -7,7 +9,18 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+const mongoose = require("mongoose");
+
 var app = express();
+
+console.log("Mongo URI exists:", !!process.env.MONGODB_URI);
+
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 5000
+  })
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch((error) => console.error("MongoDB connection error:", error.message));
 
 const { GoogleGenAI } = require('@google/genai');
 
