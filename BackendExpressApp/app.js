@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -12,23 +10,12 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var tokenRouter = require('./routes/token');
 
-const mongoose = require("mongoose");
-const { MongoClient } = require("mongodb");
 const { GoogleGenAI } = require("@google/genai");
 
 var app = express();
 
-// for local development, you can use the .env file to set environment variables
+// for local development, lets you make requests from the frontend to the backend without CORS issues locally
 app.use(cors());
-
-console.log("Mongo URI exists:", !!process.env.MONGODB_URI);
-
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 5000,
-  })
-  .then(() => console.log("Connected to MongoDB Atlas"))
-  .catch((error) => console.error("MongoDB connection error:", error.message));
 
 // const { GoogleGenAI } = require('@google/genai');
 
@@ -39,6 +26,7 @@ mongoose
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+// Middleware setup
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -48,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/token', tokenRouter);
+app.use('/api', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

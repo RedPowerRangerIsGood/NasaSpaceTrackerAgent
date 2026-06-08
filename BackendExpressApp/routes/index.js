@@ -1,13 +1,17 @@
 var express = require('express');
 var router = express.Router();
+const { env } = require('process');
+
+// models
+const satellite = require("../models/satellite");
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
 /* Test route */
-router.get("/test", function(req, res) {
+router.get("/test", function (req, res) {
   res.json({
     message: "Backend is working"
   });
@@ -15,10 +19,10 @@ router.get("/test", function(req, res) {
 
 
 /* NASA API */
-router.get("/nasa", async function(req, res) {
+router.get("/nasa", async function (req, res) {
   try {
     const url = `${process.env.NASA_BASE_URL}/planetary/apod?api_key=${process.env.NASA_API_KEY}`;
-
+    console.log("Fetching NASA APOD from URL:", url);
     const response = await fetch(url);
     const data = await response.json();
 
@@ -29,7 +33,7 @@ router.get("/nasa", async function(req, res) {
 });
 
 /* Launch Library 2 API */
-router.get("/launches", async function(req, res) {
+router.get("/launches", async function (req, res) {
   try {
     const url = `${process.env.LAUNCH_LIBRARY_URL}/launch/upcoming/?limit=10`;
 
@@ -43,7 +47,7 @@ router.get("/launches", async function(req, res) {
 });
 
 /* Spaceflight News API */
-router.get("/space-news", async function(req, res) {
+router.get("/space-news", async function (req, res) {
   try {
     const url = `${process.env.SPACEFLIGHT_NEWS_URL}/articles/?limit=10`;
 
@@ -57,7 +61,7 @@ router.get("/space-news", async function(req, res) {
 });
 
 /* SpaceX API */
-router.get("/spacex-launches", async function(req, res) {
+router.get("/spacex-launches", async function (req, res) {
   try {
     const url = `${process.env.SPACEX_API_URL}/launches/upcoming`;
 
@@ -71,38 +75,43 @@ router.get("/spacex-launches", async function(req, res) {
 });
 
 /* Where The ISS At API */
-router.get("/iss-location", async function(req, res) {
+router.get("/iss-location", async function (req, res) {
   try {
     const url = process.env.WHERE_THE_ISS_AT_URL;
 
     const response = await fetch(url);
     const data = await response.json();
+    console.log("ISS Location Data:", data);
 
-    res.json({
+    const issData = new satellite({
+      name: data.name,
       latitude: data.latitude,
       longitude: data.longitude,
       altitude: data.altitude,
       velocity: data.velocity,
-      visibility: data.visibility
     });
+
+    await issData.save();
+
+    res.json(issData);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 /* Open Notify ISS API */
-router.get("/open-notify-iss", async function(req, res) {
-  try {
-    const url = process.env.OPEN_NOTIFY_URL;
+// router.get("/open-notify-iss", async function(req, res) {
+//   try {
+//     const url = process.env.OPEN_NOTIFY_URL;
 
-    const response = await fetch(url);
-    const data = await response.json();
+//     const response = await fetch(url);
+//     const data = await response.json();
 
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+//     res.json(data);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 
 

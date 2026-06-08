@@ -1,0 +1,21 @@
+const mongoose = require("mongoose");
+
+const Schema = mongoose.Schema;
+
+const launchSchema = new mongoose.Schema({
+    launchName: { type: String, required: true },
+    programName: { type: String },
+    agency: { type: mongoose.Schema.Types.ObjectId, ref: "Agency" },
+    status: {
+        type: String,
+        required: true,
+        enum: ["TBD", "TBC", "Success", "Failure", "Go"],
+        default: "TBD",
+    },
+    start: { type: Date },
+    end: { type: Date },
+    rocket: { type: mongoose.Schema.Types.ObjectId, ref: "Rocket" },
+    mission: { type: mongoose.Schema.Types.ObjectId, ref: "Mission" },
+});
+
+module.exports = mongoose.model("Launch", launchSchema);
