@@ -91,7 +91,13 @@ router.get("/iss-location", async function (req, res) {
       velocity: data.velocity,
     });
 
-    await issData.save();
+    await satellite.create(issData)
+      .then((savedData) => {
+        console.log("ISS data saved to MongoDB:", savedData);
+      })
+      .catch((error) => {
+        console.error("Error saving ISS data to MongoDB:", error.message);
+      });
 
     res.json(issData);
   } catch (error) {
