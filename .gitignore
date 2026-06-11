@@ -161,4 +161,5 @@ vite.config.ts.timestamp-*
 .vite/
 
 
+.env.venv/
 .env

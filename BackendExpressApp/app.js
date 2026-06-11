@@ -36,6 +36,13 @@ app.use('/users', usersRouter);
 app.use('/token', tokenRouter);
 app.use('/api', indexRouter);
 
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "Backend is running"
+  });
+});
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

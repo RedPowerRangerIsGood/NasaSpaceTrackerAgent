@@ -1,7 +1,24 @@
+// THIS IS OLD
+// var express = require('express');
+// var router = express.Router();
+// const { env } = require('process');
+
+// // models
+// const satellite = require("../models/satellite");
+// const Agency = require("../models/agency");
+// const Launch = require("../models/Launch");
+// const Mission = require("../models/mission");
+// const Rocket = require("../models/rocket");
+
 import express from 'express';
 import { env } from 'process';
 
+//importing them
 import satellite from "../models/satellite.js";
+import Agency from "../models/agency.js"
+import Launch from "../models/Launch.js"
+import Mission from "../models/mission.js"
+import Rocket from "../models/rocket.js"
 
 const router = express.Router();
 
@@ -32,8 +49,65 @@ router.get("/launches", async function (req, res) {
     const response = await fetch(url);
     const data = await response.json();
 
-    res.json(data);
+    if (!data.results) {
+      return res.status(400).json({
+        error: "No launch results found",
+        data: data,
+      });
+    }
+
+    const launches = [];
+
+    for (const item of data.results) {
+      const agency = await Agency.create({
+        name: item.launch_service_provider?.name || "Unknown Agency",
+        variant: item.launch_service_provider?.type || "Unknown",
+        launchers: [],
+        spacecraft: "Unknown",
+      });
+
+      const rocket = await Rocket.create({
+        fullname:
+          item.rocket?.configuration?.full_name ||
+          item.rocket?.configuration?.name ||
+          "Unknown Rocket",
+        variant: item.rocket?.configuration?.variant || "Unknown",
+        configId: item.rocket?.configuration?.id || 0,
+      });
+
+      const mission = await Mission.create({
+        name: item.mission?.name || "Unknown Mission",
+        description: item.mission?.description || "No description available",
+        orbit: item.mission?.orbit?.name || "Unknown Orbit",
+        type: item.mission?.type || "Unknown Type",
+      });
+
+      const launch = await Launch.create({
+        launchName: item.name || "Unknown Launch",
+        programName: item.program?.[0]?.name || "Unknown Program",
+        agency: agency._id,
+        status: "TBD",
+        start: item.window_start || new Date(),
+        end: item.window_end || new Date(),
+        rocket: rocket._id,
+        mission: mission._id,
+      });
+      
+      const populatedLaunch = await Launch.findById(launch._id)
+        .populate("agency")
+        .populate("rocket")
+        .populate("mission");
+      
+      launches.push(populatedLaunch);
+    }
+
+    res.json({
+      message: "Launch data saved to MongoDB",
+      count: launches.length,
+      launches: launches,
+    });
   } catch (error) {
+    console.error("Error saving launch data:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
