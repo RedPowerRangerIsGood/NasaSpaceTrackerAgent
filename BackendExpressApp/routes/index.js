@@ -1,22 +1,14 @@
-var express = require('express');
-var router = express.Router();
-const { env } = require('process');
+import express from 'express';
+import { env } from 'process';
 
-// models
-const satellite = require("../models/satellite");
+import satellite from "../models/satellite.js";
+
+const router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
-
-/* Test route */
-router.get("/test", function (req, res) {
-  res.json({
-    message: "Backend is working"
-  });
-});
-
 
 /* NASA API */
 router.get("/nasa", async function (req, res) {
@@ -105,20 +97,4 @@ router.get("/iss-location", async function (req, res) {
   }
 });
 
-/* Open Notify ISS API */
-// router.get("/open-notify-iss", async function(req, res) {
-//   try {
-//     const url = process.env.OPEN_NOTIFY_URL;
-
-//     const response = await fetch(url);
-//     const data = await response.json();
-
-//     res.json(data);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
-
-
-
-module.exports = router;
+export default router;

@@ -1,26 +1,24 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-const cors = require('cors');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const { env } = require('process');
+import createError from 'http-errors';
+import express from 'express';
+import path from 'path';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import { env } from 'process';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var tokenRouter = require('./routes/token');
+import indexRouter from './routes/index.js';
+import usersRouter from './routes/users.js';
+import tokenRouter from './routes/token.js';
 
-const { GoogleGenAI } = require("@google/genai");
+import { GoogleGenAI } from "@google/genai";
 
 var app = express();
 
 // for local development, lets you make requests from the frontend to the backend without CORS issues locally
 app.use(cors());
-
-// const { GoogleGenAI } = require('@google/genai');
-
-// const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-// const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -54,21 +52,4 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-// async function generateContent(projectId = GOOGLE_CLOUD_PROJECT, location = GOOGLE_CLOUD_LOCATION) {
-//   const client = new GoogleGenAI({
-//     vertexai: true,
-//     project: projectId,
-//     location: location,
-//   });
-
-//   const response = await client.models.generateContent({
-//     model: 'gemini-3-flash-preview',
-//     contents: 'How does AI work?',
-//   });
-
-//   console.log(response.text);
-
-//   return response.text;
-// }
-
-module.exports = app;
+export default app;

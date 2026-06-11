@@ -1,3 +1,21 @@
+# Python
+**/__pycache__/
+*.pyc
+*.pyo
+agent/.venv/
+agent/my_agent/.adk/
+
+# Google Cloud SDK / archives
+agent/google-cloud-sdk/
+agent/*.tar.gz
+
+# GCP credentials — never commit service account keys
+**/gcp-key.json
+
+# MCP / VSCode local config
+**/.mcp.json
+**/.vscode/mcp.json
+
 # Logs
 logs
 *.log

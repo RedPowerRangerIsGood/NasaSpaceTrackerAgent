@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-const { env } = require('process');
+import express from 'express';
+import { env } from 'process';
+const router = express.Router();
 
 router.get('/', function (req, res, next) {
     const refreshToken = process.env.refresh_token
@@ -8,4 +8,4 @@ router.get('/', function (req, res, next) {
     res.json({ refreshToken });
 });
 
-module.exports = router;
+export default router;
