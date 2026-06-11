@@ -81,6 +81,7 @@ router.get("/iss-location", async function (req, res) {
       longitude: data.longitude,
       altitude: data.altitude,
       velocity: data.velocity,
+      timestamp: data.timestamp,
     });
 
     await satellite.create(issData)

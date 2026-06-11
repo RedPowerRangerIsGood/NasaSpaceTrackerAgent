@@ -8,6 +8,7 @@ const satelliteSchema = new Schema({
     longitude: { type: Number, required: true },
     altitude: { type: Number, required: true },
     velocity: { type: Number, required: true },
+    timestamp: { type: Date, default: Date.now },
 }, { versionKey: false });
 
 export default model("satellite", satelliteSchema, "satellite");

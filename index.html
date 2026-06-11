@@ -1,44 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Log Tracker</title>
-    <!-- Widget JavaScript bundle -->
-    <script src="https://cloud.google.com/ai/gen-app-builder/client?hl=en_US"></script>
-
-    <!-- Search widget element is not visible by default -->
-    <gen-search-widget configId="52f5bb6b-dabc-4cb1-9589-f4a8bd621885" triggerId="searchWidgetTrigger">
-    </gen-search-widget>
-
-    <!-- Element that opens the widget on click. It does not have to be an input -->
-    <input placeholder="Search here" id="searchWidgetTrigger" />
+    <title>Space Log Tracker · Mission Command</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <h1>Space Log Tracker</h1>
-    <p>Welcome to the Space Log Tracker! This application allows you to keep track of your space-related activities and
-        logs.</p>
-    <p>Use the navigation menu to access different sections of the tracker, including:</p>
-    <ul>
-        <li><a href="#logs">Logs</a></li>
-        <li><a href="#statistics">Statistics</a></li>
-        <li><a href="#settings">Settings</a></li>
-    </ul>
 
-    <h2 id="logs">Logs</h2>
-    <p>Here you can view and manage your space logs. You can add new logs, edit existing ones, and delete logs that are
-        no longer needed.</p>
+<!-- ── NAV ──────────────────────────────────────────────── -->
+<header class="nav">
+    <div class="brand">
+        <div class="brand-icon">🛰</div>
+        <div>
+            <div class="brand-name">Space Log Tracker</div>
+            <div class="brand-sub">MISSION COMMAND · v0.1</div>
+        </div>
+    </div>
 
-    <h2 id="statistics">Statistics</h2>
-    <p>In this section, you can view various statistics related to your space activities. This includes total time spent
-        in space, number of missions, and more.</p>
+    <nav>
+        <a href="#" class="active">Dashboard</a>
+        <a href="#launches">Missions</a>
+        <a href="#news">Logs</a>
+        <a href="#" onclick="openChat(); return false;">AI Agent</a>
+        <a href="#">Data Sources</a>
+    </nav>
 
-    <h2 id="settings">Settings</h2>
-    <p>Customize your Space Log Tracker experience by adjusting settings such as notification preferences, display
-        options, and account information.</p>
-    <script src="./ui.js"></script>
+    <div class="nav-right">
+        <div class="search-box">
+            <span>Search missions, logs, asteroids...</span>
+            <kbd>⌘K</kbd>
+        </div>
+        <div class="feeds-pill"><span class="dot"></span>FEEDS LIVE</div>
+        <div class="avatar" title="Profile">SL</div>
+    </div>
+</header>
+
+<!-- ── TICKER ────────────────────────────────────────────── -->
+<div class="ticker">
+    <div class="ticker-track" id="tickerTrack">
+        <span class="tick">
+            <span class="td g"></span>
+            <span class="tl">ISS</span>
+            fetching position...
+            <span class="tick-sep">·</span>
+        </span>
+    </div>
+</div>
+
+<!-- ── MAIN ──────────────────────────────────────────────── -->
+<div class="wrap">
+
+    <!-- Hero + OPS Board -->
+    <div class="hero-row">
+        <section>
+            <div class="badge-row">
+                <span class="badge live"><span class="dot"></span>LIVE FEED · 5 SOURCES</span>
+                <span class="badge build">BUILD 2026.06.11</span>
+            </div>
+
+            <h1>
+                AI-powered mission logs<br>
+                for live and upcoming<br>
+                <span class="acc">space activity.</span>
+            </h1>
+
+            <p class="hero-sub">
+                Space Log Tracker pulls public mission data from NASA, Launch Library&nbsp;2,
+                Spaceflight News and the ISS feed, cleans it into a single timeline, and lets an
+                AI agent translate it into plain language.
+            </p>
+
+            <div class="cta">
+                <a href="#launches" class="btn btn-teal">View Missions →</a>
+                <button class="btn btn-outline" onclick="openChat()">+ Ask AI Agent</button>
+                <span class="no-login">No login required for demo</span>
+            </div>
+        </section>
+
+        <aside class="ops">
+            <div class="ops-head">
+                <span class="ops-title">OPS BOARD</span>
+                <span class="ops-clock" id="opsClock">T+ 00:00:00 UTC</span>
+                <span class="ops-nom">● NOMINAL</span>
+            </div>
+            <div class="ops-grid">
+                <div class="ops-cell">
+                    <div class="ops-lbl">Missions Tracked</div>
+                    <div class="ops-val" id="statMissions">—</div>
+                    <div class="ops-sub">upcoming launches</div>
+                </div>
+                <div class="ops-cell">
+                    <div class="ops-lbl">News Ingested 24H</div>
+                    <div class="ops-val" id="statNews">—</div>
+                    <div class="ops-sub">across 4 sources</div>
+                </div>
+                <div class="ops-cell">
+                    <div class="ops-lbl">SpaceX Launches</div>
+                    <div class="ops-val" id="statSpacex">—</div>
+                    <div class="ops-sub">upcoming manifested</div>
+                </div>
+                <div class="ops-cell">
+                    <div class="ops-lbl">ISS Altitude</div>
+                    <div class="ops-val" id="statAlt">—</div>
+                    <div class="ops-sub"><span class="live-tag">● LIVE</span> km above Earth</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="sec-lbl">Dashboard Overview</div>
+    <div class="sec-title">Today on the boards</div>
+    <p class="sec-sub">A snapshot of everything currently tracked.</p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-lbl">ISS LOCATION <span class="live-dot">LIVE</span></div>
+            <div class="card-val" id="cardLat">—</div>
+            <div class="card-sub" id="cardIssSub">Fetching live position...</div>
+            <svg class="card-spark" width="62" height="28" viewBox="0 0 62 28">
+                <polyline class="spark" points="0,24 10,18 22,21 34,10 46,14 58,7" style="stroke:var(--teal)"/>
+            </svg>
+        </div>
+
+        <div class="card">
+            <div class="card-lbl">UPCOMING LAUNCHES</div>
+            <div class="card-val" id="cardLaunchCnt">—</div>
+            <div class="card-sub" id="cardLaunchSub">Loading launch data...</div>
+            <svg class="card-spark" width="62" height="28" viewBox="0 0 62 28">
+                <polyline class="spark" points="0,26 12,22 24,24 36,14 48,18 60,10" style="stroke:var(--purple)"/>
+            </svg>
+        </div>
+
+        <div class="card">
+            <div class="card-lbl">RECENT UPDATES</div>
+            <div class="card-val" id="cardNewsCnt">—</div>
+            <div class="card-sub">Across NASA, LL2, SNAPI, AI</div>
+            <svg class="card-spark" width="62" height="28" viewBox="0 0 62 28">
+                <polyline class="spark" points="0,22 10,16 22,18 36,8 46,12 60,6" style="stroke:var(--blue)"/>
+            </svg>
+        </div>
+
+        <div class="card">
+            <div class="card-lbl">SPACEX LAUNCHES</div>
+            <div class="card-val" id="cardSpacexCnt">—</div>
+            <div class="card-sub" id="cardSpacexSub">Ask AI Agent for details</div>
+            <svg class="card-spark" width="62" height="28" viewBox="0 0 62 28">
+                <polyline class="spark" points="0,24 12,20 24,16 36,18 46,10 60,14" style="stroke:var(--yellow)"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Launch Table -->
+    <div class="launches-sec" id="launches">
+        <div style="margin-bottom: 1rem;">
+            <div class="sec-lbl">Launch Schedule</div>
+            <div class="sec-title">Upcoming Missions</div>
+            <p class="sec-sub">Next scheduled launches from Launch Library 2</p>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Mission</th>
+                    <th>Vehicle</th>
+                    <th>NET Window</th>
+                    <th>Launch Site</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="launchBody">
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        Loading...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- News Feed -->
+    <div style="margin-top: 3rem;" id="news">
+        <div class="sec-lbl">News Feed</div>
+        <div class="sec-title">Latest Space News</div>
+        <p class="sec-sub">Recent articles from Spaceflight News API</p>
+        <div class="news-grid" id="newsGrid"></div>
+    </div>
+
+</div><!-- /wrap -->
+
+<!-- ── CHAT OVERLAY ──────────────────────────────────────── -->
+<div class="chat-overlay" id="chatOverlay" onclick="handleOverlayClick(event)">
+    <div class="chat-panel">
+        <div class="chat-hd">
+            <div class="chat-hd-l">
+                <div class="chat-ico">🛰</div>
+                <div>
+                    <div class="chat-name">NASA Space Tracker</div>
+                    <div class="chat-status">● Online · Local Agent</div>
+                </div>
+            </div>
+            <button class="chat-close" onclick="closeChat()">✕</button>
+        </div>
+
+        <div class="chat-msgs" id="chatMsgs">
+            <div class="msg agent">
+                Hi! I'm the NASA Space Tracker agent. Ask me about near-Earth asteroids,
+                ISS tracking, upcoming launches, or satellite data.
+            </div>
+        </div>
+
+        <div class="chat-foot">
+            <textarea
+                class="chat-in"
+                id="chatIn"
+                rows="1"
+                placeholder="Ask about asteroids, satellites, launches..."
+                onkeydown="handleChatKey(event)"
+            ></textarea>
+            <button class="chat-send" id="chatSend" onclick="sendMsg()">Send</button>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
 </body>
-
 </html>
