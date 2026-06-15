@@ -8,14 +8,14 @@
 
 npm install <--save-dev> nodemon
 
-# How to run express app locally, go to BackendExpressApp directory and run this command
+# How to run express app locally
 
 npm run devstart(uses nodemon command, and loads in environment varaible) or npm run start
 
 it should be on localhost port XXXX or whatever is configured in the bin/www file
 http://localhost:XXXX/
 
-# Command to run a specific node version using the nvmrc file inside the Backend App
+# Command to run a specific node version using the nvmrc file
 
 nvm use
 
